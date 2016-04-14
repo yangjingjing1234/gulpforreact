@@ -8,14 +8,13 @@ var config = require("./config.json"),
 
 var PATH = config.path;
 gulp.task("default",function(){
-  // gulp.src(PATH.jsx+"/*.jsx")
-  gulp.src([PATH.js+"/a.jsx",PATH.js+"/b.jsx"])
+  gulp.src(PATH.jsx+"/*.jsx")
     .pipe(react())
     .pipe(babel({presets:[es2015]}))
     .pipe(gulp.dest(PATH.js))
     .pipe(webpack({
       output:{
-        filename:"all2.js",
+        filename:"all.js",
       },
       stats:{
         colors:true
