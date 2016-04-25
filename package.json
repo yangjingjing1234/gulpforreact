@@ -27,7 +27,7 @@
     "gulp-webpack": "^1.5.0"
   },
   "scripts": {
-    "gulp": "gulp"
+    "gulp": "gulp --isflexible false"
   },
   "repository": {
     "type": "git",
