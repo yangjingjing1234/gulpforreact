@@ -1,6 +1,12 @@
 {
   "path":{
-    "jsx":"./js/jsx",
-    "js":"./js"
+    "rootPath":"/Users/menglingjun/work/reactTest/",
+    "imagePath":"/Users/menglingjun/work/reactTest/images/",
+  	"jsPath":"/Users/menglingjun/work/reactTest/js/",
+  	"cssPath":"/Users/menglingjun/work/reactTest/css/",
+  	"htmlPath":"/Users/menglingjun/work/reactTest/"
+  },
+  "server":{
+    "port":8080
   }
 }
