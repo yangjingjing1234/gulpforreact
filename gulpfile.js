@@ -14,7 +14,9 @@ var config = require("./config.json"),
 	postcss= require("gulp-postcss"),
 	px2rem = require("postcss-px2rem"),
 	plumber = require("gulp-plumber"),
-	webpack = require("gulp-webpack");
+	webpack = require("gulp-webpack"),
+	changed = require("gulp-changed"),
+	rev = require("gulp-rev");
 
 var PATH = config.path;
 var _env = gulp.env;
@@ -37,6 +39,7 @@ gulp.task("clean",function(){
 
 gulp.task("reactes6:compile",function(){
 	return gulp.src(PATH.jsPath+"jsx/*.jsx")
+		.pipe(changed(PATH.jsPath))
 		.pipe(plumber({errorHandler:notify.onError("React ES6 Error:<%=error.message %>")}))
 		.pipe(babel({"presets":[presetreact,es2015]}))
 		.pipe(uglify())
@@ -45,13 +48,14 @@ gulp.task("reactes6:compile",function(){
 		.pipe(webpack({
 			output:{
         path:PATH.jsPath,
-        filename:"bundle.js",
+        filename:"[name].js",
       },
       stats: {
           // Nice colored output
           colors: true
       },
 		}))
+		.pipe(rev())
 		.pipe(gulp.dest(PATH.jsPath))
 		.pipe(selfNotify({title:"React JSX (use ES6) to js and minify",message:"JSX task complete."}));
 });
@@ -60,21 +64,25 @@ gulp.task("less:compile",function(){
 	if(_isPxToRem){
 		var processors = [px2rem({remUnit:75})];
 		return gulp.src([PATH.cssPath+"less/*.less","!"+PATH.cssPath+"less/{common,public}.less"])
+			.pipe(changed(PATH.cssPath))
 			.pipe(plumber({errorHandler:notify.onError("Less Error:<%=error.message %>")}))
 			.pipe(less())
 			.pipe(postcss(processors))
 			.pipe(gulp.dest(PATH.cssPath))
 			.pipe(rename({suffix:".min"}))
 			.pipe(minifycss())
+			.pipe(rev())
 			.pipe(gulp.dest(PATH.cssPath))
 			.pipe(selfNotify({title:"Less to Css and minify",message:"CSS task complete."}));
 	}else{
 		return gulp.src([PATH.cssPath+"less/*.less","!"+PATH.cssPath+"less/{common,public}.less"])
+			.pipe(changed(PATH.cssPath))
 			.pipe(plumber({errorHandler:notify.onError("Less Error:<%=error.message %>")}))
 			.pipe(less())
 			.pipe(gulp.dest(PATH.cssPath))
 			.pipe(rename({suffix:".min"}))
 			.pipe(minifycss())
+			.pipe(rev())
 			.pipe(gulp.dest(PATH.cssPath))
 			.pipe(selfNotify({title:"Less to Css and minify",message:"CSS task complete."}));
 	}
