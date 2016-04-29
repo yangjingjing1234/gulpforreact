@@ -42,7 +42,7 @@ gulp.task("clean",function(){
 
 gulp.task("js:compile",function(){
 	if(_isPublish){
-		return gulp.src(PATH.jsPath+"*.js","!"+PATH.jsPath+"libs/**"])
+		return gulp.src([PATH.jsPath+"*.js","!"+PATH.jsPath+"libs/**"])
 		.pipe(changed(PATH.distJsPath))
 		.pipe(plumber({errorHandler:notify.onError("JS Error:<%=error.message %>")}))
 		.pipe(rename({suffix:".min"}))
@@ -53,7 +53,7 @@ gulp.task("js:compile",function(){
 		.pipe(gulp.dest(PATH.distJsPath))
 		.pipe(selfNotify({title:"JS minify",message:"JS task complete."}));
 	}else{
-		return gulp.src(PATH.jsPath+"*.js","!"+PATH.jsPath+"libs/**"])
+		return gulp.src([PATH.jsPath+"*.js","!"+PATH.jsPath+"libs/**"])
 		.pipe(changed(PATH.distJsPath))
 		.pipe(plumber({errorHandler:notify.onError("JS Error:<%=error.message %>")}))
 		.pipe(rename({suffix:".min"}))
@@ -61,7 +61,7 @@ gulp.task("js:compile",function(){
 		.pipe(gulp.dest(PATH.distJsPath))
 		.pipe(selfNotify({title:"JS minify",message:"JS task complete."}));
 	}
-	
+
 });
 
 gulp.task("reactes6:compile",function(){
@@ -112,7 +112,7 @@ gulp.task("reactes6:compile",function(){
 });
 
 gulp.task("less:compile",function(){
-	
+
 	if(_isPublish){
 		if(_isPxToRem){
 			var processors = [px2rem({remUnit:75})];
@@ -185,7 +185,7 @@ gulp.task("image::compile",function(){
 		.pipe(gulp.dest(PATH.distImagePath))
 		.pipe(selfNotify({title:"Image minify",message:"Image task complete."}));
 	}
-	
+
 });
 gulp.task("browsersync",function(){
 	browsersync.init({
