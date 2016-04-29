@@ -1,10 +1,14 @@
 {
   "path":{
-    "rootPath":"/Users/menglingjun/work/reactTest/",
-    "imagePath":"/Users/menglingjun/work/reactTest/images/",
-  	"jsPath":"/Users/menglingjun/work/reactTest/js/",
-  	"cssPath":"/Users/menglingjun/work/reactTest/css/",
-  	"htmlPath":"/Users/menglingjun/work/reactTest/"
+    "rootPath":"E:/work/easyPage/",
+    "imagePath":"E:/work/easyPage/images/",
+    "jsPath":"E:/work/easyPage/js/",
+    "cssPath":"E:/work/easyPage/css/",
+    "htmlPath":"E:/work/easyPage/",
+    "distJsPath":"E:/work/easyPage/dist/js/",
+    "distCssPath":"E:/work/easyPage/dist/css/",
+    "distImagePath":"E:/work/easyPage/dist/images/",
+    "distRootPath":"E:/work/easyPage/dist/"
   },
   "server":{
     "port":8080
