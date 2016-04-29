@@ -9,31 +9,40 @@
 
 ###B:外层项目目录结构
 
+    --dist //发布后的目录
+
+    --js
+      --*.min.js //打包好的js
+      --rev.manifest.json //hash js文件对应表
+
+    --images //打包好的imgage
+    --css
+      --*.min.css //打包好的样式文件
+
     js
-    --jsx
-    --es6
-    --*.min.js
+    --libs //三方库目录
+    --jsx //React组建目录
+    --*.js //原生js目录
 
     images
     --*.jpg,*.png
 
     css
-    --less
-    --*.min.css
+    --less //css预处理目录
 
     *.html
-    
+
 ###C：命令执行参数
 
     gulp --isflexible true 开启pxtorem的转换,
-    
+
     默认:
     gulp 监听js/jsx/*.jsx,css/less/*.less，images和html，针对jsx和less会进行变动更新后压缩
-    
+
     isflexible参数是是否开启pxtorem的转换，此字段默认是关闭转换，如果打开则需要flexible.js来配合使用。
     flexible github地址：https://github.com/amfe/lib-flexible
     需要在header里加入此js
-    
+
 ###D:Browsersync代理监听nginx的vhost
 Browsersync会启动一个server，如果想要监听nginx配置的vhost域名，则通过browsersync的proxy配合nginx的vhost相同域名即可。
 用法如下：
@@ -45,7 +54,7 @@ Browsersync会启动一个server，如果想要监听nginx配置的vhost域名�
 
     2):nginx的vhost为test.xxx.com.conf
 这样browser就会通过代理来监听nginx设置的vhost。如果实现接口跨域配置vhost里的proxy即可
-    
+
 ###E:增加config文件来配置监听路径
     {
         "path":{

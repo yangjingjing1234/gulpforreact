@@ -5,15 +5,19 @@ var config = require("./config.json"),
 	less = require("gulp-less"),
 	uglify = require("gulp-uglify"),
 	rename = require("gulp-rename"),
+	babel = require("gulp-babel"),
 	clean = require("gulp-clean"),
 	notify = require("gulp-notify"),
+	es2015 = require("babel-preset-es2015"),
+	presetreact = require("babel-preset-react"),
 	minifycss = require("gulp-minify-css"),
 	postcss= require("gulp-postcss"),
 	px2rem = require("postcss-px2rem"),
 	plumber = require("gulp-plumber"),
+	webpack = require("gulp-webpack"),
 	changed = require("gulp-changed"),
-	tinypng = require("gulp-tinypng"),
-	rev = require("gulp-rev");
+	rev = require("gulp-rev"),
+	tinypng = require("gulp-tinypng");
 
 var PATH = config.path;
 var _env = gulp.env;
@@ -38,7 +42,7 @@ gulp.task("clean",function(){
 
 gulp.task("js:compile",function(){
 	if(_isPublish){
-		return gulp.src(PATH.jsPath+"*.js")
+		return gulp.src(PATH.jsPath+"*.js","!"+PATH.jsPath+"libs/**"])
 		.pipe(changed(PATH.distJsPath))
 		.pipe(plumber({errorHandler:notify.onError("JS Error:<%=error.message %>")}))
 		.pipe(rename({suffix:".min"}))
@@ -49,7 +53,7 @@ gulp.task("js:compile",function(){
 		.pipe(gulp.dest(PATH.distJsPath))
 		.pipe(selfNotify({title:"JS minify",message:"JS task complete."}));
 	}else{
-		return gulp.src(PATH.jsPath+"*.js")
+		return gulp.src(PATH.jsPath+"*.js","!"+PATH.jsPath+"libs/**"])
 		.pipe(changed(PATH.distJsPath))
 		.pipe(plumber({errorHandler:notify.onError("JS Error:<%=error.message %>")}))
 		.pipe(rename({suffix:".min"}))
@@ -58,6 +62,53 @@ gulp.task("js:compile",function(){
 		.pipe(selfNotify({title:"JS minify",message:"JS task complete."}));
 	}
 	
+});
+
+gulp.task("reactes6:compile",function(){
+	if(_isPublish){
+	return gulp.src(PATH.jsPath+"jsx/*.jsx")
+		.pipe(changed(PATH.jsPath))
+		.pipe(plumber({errorHandler:notify.onError("React ES6 Error:<%=error.message %>")}))
+		.pipe(babel({"presets":[presetreact,es2015]}))
+		.pipe(uglify())
+		.pipe(rename({suffix:".min"}))
+		.pipe(gulp.dest(PATH.distJsPath))
+		.pipe(webpack({
+			output:{
+        path:PATH.jsPath,
+        filename:"[name].js",
+      },
+      stats: {
+          // Nice colored output
+          colors: true
+      },
+		}))
+		.pipe(rev())
+		.pipe(gulp.dest(PATH.distJsPath))
+		.pipe(rev.manifest())
+		.pipe(gulp.dest(PATH.distJsPath))
+		.pipe(selfNotify({title:"React JSX (use ES6) to js and minify",message:"JSX task complete."}));
+      }else{
+      	return gulp.src(PATH.jsPath+"jsx/*.jsx")
+		.pipe(changed(PATH.jsPath))
+		.pipe(plumber({errorHandler:notify.onError("React ES6 Error:<%=error.message %>")}))
+		.pipe(babel({"presets":[presetreact,es2015]}))
+		.pipe(uglify())
+		.pipe(rename({suffix:".min"}))
+		.pipe(gulp.dest(PATH.distJsPath))
+		.pipe(webpack({
+			output:{
+        path:PATH.jsPath,
+        filename:"[name].js",
+      },
+      stats: {
+          // Nice colored output
+          colors: true
+      },
+		}))
+		.pipe(gulp.dest(PATH.distJsPath))
+		.pipe(selfNotify({title:"React JSX (use ES6) to js and minify",message:"JSX task complete."}));
+      }
 });
 
 gulp.task("less:compile",function(){

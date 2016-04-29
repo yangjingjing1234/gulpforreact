@@ -185,7 +185,8 @@ gulp.task("watch",function(){
 	gulp.watch(PATH.cssPath+"less/*.less",["less:compile",browsersync.reload]);
 	gulp.watch(PATH.imagePath+"**",["image::compile",browsersync.reload]);
 	gulp.watch(PATH.jsPath+"jsx/*.jsx",["reactes6:compile",browsersync.reload]);
+	gulp.watch(PATH.jsPath+"**/*.js",["js:compile",browsersync.reload]);
 })
 gulp.task("default",["clean"],function(){
-	gulp.start("reactes6:compile","less:compile","image::compile","watch","browsersync");
+	gulp.start("js:compile","reactes6:compile","less:compile","image::compile","watch","browsersync");
 });
