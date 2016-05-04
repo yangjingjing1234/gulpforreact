@@ -1,14 +1,14 @@
 {
   "path":{
-    "rootPath":"E:/work/react/01_react_router",
-    "imagePath":"E:/work/react/01_react_router/images/",
-    "jsPath":"E:/work/react/01_react_router/js/",
-    "cssPath":"E:/work/react/01_react_router/css/",
-    "htmlPath":"E:/work/react/01_react_router/",
-    "distJsPath":"E:/work/react/01_react_router/dist/js/",
-    "distCssPath":"E:/work/react/01_react_router/dist/css/",
-    "distImagePath":"E:/work/react/01_react_router/dist/images/",
-    "distRootPath":"E:/work/react/01_react_router/dist/"
+    "rootPath":"E:/work/react_demo/01_react_router",
+    "imagePath":"E:/work/react_demo/01_react_router/images/",
+    "jsPath":"E:/work/react_demo/01_react_router/js/",
+    "cssPath":"E:/work/react_demo/01_react_router/css/",
+    "htmlPath":"E:/work/react_demo/01_react_router/",
+    "distJsPath":"E:/work/react_demo/01_react_router/dist/js/",
+    "distCssPath":"E:/work/react_demo/01_react_router/dist/css/",
+    "distImagePath":"E:/work/react_demo/01_react_router/dist/images/",
+    "distRootPath":"E:/work/react_demo/01_react_router/dist/"
   },
   "server":{
     "port":8080
