@@ -31,7 +31,7 @@ var selfNotify = notify.withReporter(function(options,callback){
 	callback();
 });
 gulp.task("clean",function(){
-	return gulp.src([PATH.distJsPath,PATH.distCssPath],{read:false})
+	return gulp.src([PATH.distJsPath+"**/*.js",PATH.distCssPath+"**/*.css"],{read:false})
 	.pipe(plumber({errorHandler:notify.onError("Clean Error:<%=error.message %>")}))
 	.pipe(clean({force:true}))
 	.pipe(selfNotify({
@@ -50,14 +50,6 @@ gulp.task("js:compile",function(){
 		.pipe(rev())
 		.pipe(gulp.dest(PATH.distJsPath))
 		.pipe(rev.manifest())
-		.pipe(gulp.dest(PATH.distJsPath))
-		.pipe(selfNotify({title:"JS minify",message:"JS task complete."}));
-	}else{
-		return gulp.src([PATH.jsPath+"*.js","!"+PATH.jsPath+"libs/**"])
-		.pipe(changed(PATH.distJsPath))
-		.pipe(plumber({errorHandler:notify.onError("JS Error:<%=error.message %>")}))
-		.pipe(rename({suffix:".min"}))
-		.pipe(uglify())
 		.pipe(gulp.dest(PATH.distJsPath))
 		.pipe(selfNotify({title:"JS minify",message:"JS task complete."}));
 	}
@@ -93,8 +85,6 @@ gulp.task("reactes6:compile",function(){
 		.pipe(changed(PATH.jsPath))
 		.pipe(plumber({errorHandler:notify.onError("React ES6 Error:<%=error.message %>")}))
 		.pipe(babel({"presets":[presetreact,es2015]}))
-		.pipe(uglify())
-		.pipe(rename({suffix:".min"}))
 		.pipe(gulp.dest(PATH.distJsPath))
 		.pipe(webpack({
 			output:{
@@ -149,8 +139,6 @@ gulp.task("less:compile",function(){
 				.pipe(plumber({errorHandler:notify.onError("Less Error:<%=error.message %>")}))
 				.pipe(less())
 				.pipe(postcss(processors))
-				.pipe(rename({suffix:".min"}))
-				.pipe(minifycss())
 				.pipe(gulp.dest(PATH.distCssPath))
 				.pipe(selfNotify({title:"Less to Css and minify",message:"CSS task complete."}));
 		}else{
@@ -158,8 +146,6 @@ gulp.task("less:compile",function(){
 				.pipe(changed(PATH.distCssPath))
 				.pipe(plumber({errorHandler:notify.onError("Less Error:<%=error.message %>")}))
 				.pipe(less())
-				.pipe(rename({suffix:".min"}))
-				.pipe(minifycss())
 				.pipe(gulp.dest(PATH.distCssPath))
 				.pipe(selfNotify({title:"Less to Css and minify",message:"CSS task complete."}));
 		}
@@ -175,13 +161,6 @@ gulp.task("image::compile",function(){
 		.pipe(rev())
 		.pipe(gulp.dest(PATH.distImagePath))
 		.pipe(rev.manifest())
-		.pipe(gulp.dest(PATH.distImagePath))
-		.pipe(selfNotify({title:"Image minify",message:"Image task complete."}));
-	}else{
-		return gulp.src(PATH.imagePath+"**")
-		.pipe(changed(PATH.distImagePath))
-		.pipe(plumber({errorHandler:notify.onError("Images Error:<%=error.message %>")}))
-		.pipe(tinypng(APPKEY))
 		.pipe(gulp.dest(PATH.distImagePath))
 		.pipe(selfNotify({title:"Image minify",message:"Image task complete."}));
 	}
@@ -209,7 +188,8 @@ gulp.task("watch",function(){
 	gulp.watch(PATH.cssPath+"less/*.less",["less:compile",browsersync.reload]);
 	gulp.watch(PATH.imagePath+"**",["image::compile",browsersync.reload]);
 	gulp.watch(PATH.jsPath+"**/*.js",["js:compile",browsersync.reload]);
+	gulp.watch(PATH.jsPath+"jsx/*.jsx",["reactes6:compile",browsersync.reload]);
 })
 gulp.task("default",["clean"],function(){
-	gulp.start("js:compile","less:compile","image::compile","watch","browsersync");
+	gulp.start("js:compile","reactes6:compile","less:compile","image::compile","watch","browsersync");
 });
