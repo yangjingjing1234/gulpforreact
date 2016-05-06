@@ -31,7 +31,7 @@ var selfNotify = notify.withReporter(function(options,callback){
 	callback();
 });
 gulp.task("clean",function(){
-	return gulp.src([PATH.distJsPath+"**/*.js",PATH.distCssPath+"**/*.css"],{read:false})
+	return gulp.src([PATH.distJsPath+"**/*",PATH.distCssPath+"**/*.css"],{read:false})
 	.pipe(plumber({errorHandler:notify.onError("Clean Error:<%=error.message %>")}))
 	.pipe(clean({force:true}))
 	.pipe(selfNotify({
@@ -51,9 +51,59 @@ gulp.task("js:compile",function(){
 		.pipe(gulp.dest(PATH.distJsPath))
 		.pipe(rev.manifest())
 		.pipe(gulp.dest(PATH.distJsPath))
-		.pipe(selfNotify({title:"JS minify",message:"JS task complete."}));
+		.pipe(selfNotify({title:"JS minify",message:"JS package task complete."}));
+	}else{
+		return gulp.src([PATH.jsPath+"*.js","!"+PATH.jsPath+"libs/**"])
+		.pipe(changed(PATH.distJsPath))
+		.pipe(plumber({errorHandler:notify.onError("JS Error:<%=error.message %>")}))
+		.pipe(gulp.dest(PATH.distJsPath))
+		.pipe(selfNotify({title:"JS copy to dist",message:"JS copy task complete."}));
 	}
+});
 
+gulp.task("es6:compile",function(){
+	if(_isPublish){
+	return gulp.src(PATH.jsPath+"**/*.es6")
+		.pipe(changed(PATH.jsPath))
+		.pipe(plumber({errorHandler:notify.onError("ES6 Error:<%=error.message %>")}))
+		.pipe(babel({"presets":[es2015]}))
+		.pipe(uglify())
+		.pipe(rename({suffix:".min"}))
+		.pipe(gulp.dest(PATH.distJsPath))
+		.pipe(webpack({
+			output:{
+			path:PATH.jsPath,
+			filename:"[name]_jsx.js",
+			},
+			stats: {
+			// Nice colored output
+			colors: true
+			},
+		}))
+		.pipe(rev())
+		.pipe(gulp.dest(PATH.distJsPath))
+		.pipe(rev.manifest())
+		.pipe(gulp.dest(PATH.distJsPath))
+		.pipe(selfNotify({title:"ES6 to js and minify",message:"ES6 package task complete."}));
+      }else{
+      	return gulp.src(PATH.jsPath+"**/*.es6")
+		.pipe(changed(PATH.jsPath.es6+"**/*.es6"))
+		.pipe(plumber({errorHandler:notify.onError("ES6 Error:<%=error.message %>")}))
+		.pipe(babel({"presets":[es2015]}))
+		.pipe(gulp.dest(PATH.distJsPath))
+		.pipe(webpack({
+			output:{
+			path:PATH.jsPath,
+			filename:"[name]_es6.js",
+			},
+			stats: {
+			// Nice colored output
+			colors: true
+			},
+		}))
+		.pipe(gulp.dest(PATH.distJsPath))
+		.pipe(selfNotify({title:"ES6 to js and minify",message:"ES6 package task complete."}));
+      }
 });
 
 gulp.task("reactes6:compile",function(){
@@ -68,7 +118,7 @@ gulp.task("reactes6:compile",function(){
 		.pipe(webpack({
 			output:{
         path:PATH.jsPath,
-        filename:"[name].js",
+        filename:"[name]_jsx.js",
       },
       stats: {
           // Nice colored output
@@ -79,7 +129,7 @@ gulp.task("reactes6:compile",function(){
 		.pipe(gulp.dest(PATH.distJsPath))
 		.pipe(rev.manifest())
 		.pipe(gulp.dest(PATH.distJsPath))
-		.pipe(selfNotify({title:"React JSX (use ES6) to js and minify",message:"JSX task complete."}));
+		.pipe(selfNotify({title:"React JSX (use ES6) to js and minify",message:"JSX package task complete."}));
       }else{
       	return gulp.src(PATH.jsPath+"jsx/*.jsx")
 		.pipe(changed(PATH.jsPath))
@@ -89,7 +139,7 @@ gulp.task("reactes6:compile",function(){
 		.pipe(webpack({
 			output:{
         path:PATH.jsPath,
-        filename:"[name].js",
+        filename:"[name]_jsx.js",
       },
       stats: {
           // Nice colored output
@@ -97,7 +147,7 @@ gulp.task("reactes6:compile",function(){
       },
 		}))
 		.pipe(gulp.dest(PATH.distJsPath))
-		.pipe(selfNotify({title:"React JSX (use ES6) to js and minify",message:"JSX task complete."}));
+		.pipe(selfNotify({title:"React JSX (use ES6) to js and minify",message:"JSX package task complete."}));
       }
 });
 
@@ -152,7 +202,7 @@ gulp.task("less:compile",function(){
 	}
 });
 var APPKEY = "DkizKeUPgUeOrOn08-sJJn7i_GrmWKRa";
-gulp.task("image::compile",function(){
+gulp.task("image:compile",function(){
 	if(_isPublish){
 		return gulp.src(PATH.imagePath+"**")
 		.pipe(changed(PATH.distImagePath))
@@ -171,16 +221,16 @@ gulp.task("browsersync",function(){
 		// ui:{
 		// 	port:80
 		// },
-		server:{baseDir:PATH.rootPath},
+		//server:{baseDir:PATH.rootPath},
 		// port:80,
 		// host:"test.kaolafm.com",
-		// proxy:{
-		// 	target:"test.kaolafm.com/liveproject/liveroom",
+		 proxy:{
+		 	target:"http://localhost:8000",
 		// 	middleware:function(req,res,next){
 		// 		console.log(req.url);
 		// 		next();
 		// 	}
-		// }
+		 }
 	});
 });
 gulp.task("watch",function(){
@@ -189,7 +239,8 @@ gulp.task("watch",function(){
 	gulp.watch(PATH.imagePath+"**",["image::compile",browsersync.reload]);
 	gulp.watch(PATH.jsPath+"**/*.js",["js:compile",browsersync.reload]);
 	gulp.watch(PATH.jsPath+"jsx/*.jsx",["reactes6:compile",browsersync.reload]);
+	gulp.watch(PATH.jsPath+"**/*.es6",["es6:compile",browsersync.reload]);
 })
 gulp.task("default",["clean"],function(){
-	gulp.start("js:compile","reactes6:compile","less:compile","image::compile","watch","browsersync");
+	gulp.start("js:compile","reactes6:compile","es6:compile","less:compile","image:compile","watch","browsersync");
 });
