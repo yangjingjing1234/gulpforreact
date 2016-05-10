@@ -17,7 +17,8 @@ var config = require("./config.json"),
 	webpack = require("gulp-webpack"),
 	changed = require("gulp-changed"),
 	rev = require("gulp-rev"),
-	tinypng = require("gulp-tinypng");
+	tinypng = require("gulp-tinypng"),
+	modRewrite  = require('connect-modrewrite');
 
 var PATH = config.path;
 var _env = gulp.env;
@@ -222,25 +223,39 @@ gulp.task("browsersync",function(){
 		// 	port:80
 		// },
 		//server:{baseDir:PATH.rootPath},
+		server: {
+			baseDir: PATH.rootPath,
+			middleware: [
+				modRewrite(['^([^.]+)$ /index.html [L]'])
+			]
+		},
+		//rewriteRules:[
+		//{
+		//	match:"/Cannot GET/g",
+		//	fn:function(match){
+		//		return "/";
+		//	}
+		//}
+		//],
 		// port:80,
-		// host:"test.kaolafm.com",
-		 proxy:{
-		 	target:"http://localhost:8000",
+		//host:"127.0.0.1/work/pageFactory",
+		// proxy:{
+		// 	target:"http://localhost:8000",
 		// 	middleware:function(req,res,next){
 		// 		console.log(req.url);
 		// 		next();
 		// 	}
-		 }
+		// }
 	});
 });
 gulp.task("watch",function(){
 	gulp.watch(PATH.htmlPath+"**/*.html",browsersync.reload);
 	gulp.watch(PATH.cssPath+"less/*.less",["less:compile",browsersync.reload]);
-	gulp.watch(PATH.imagePath+"**",["image::compile",browsersync.reload]);
+	gulp.watch(PATH.imagePath+"**",["image:compile",browsersync.reload]);
 	gulp.watch(PATH.jsPath+"**/*.js",["js:compile",browsersync.reload]);
 	gulp.watch(PATH.jsPath+"jsx/*.jsx",["reactes6:compile",browsersync.reload]);
-	gulp.watch(PATH.jsPath+"**/*.es6",["es6:compile",browsersync.reload]);
+	//gulp.watch(PATH.jsPath+"**/*.es6",["es6:compile",browsersync.reload]);
 })
 gulp.task("default",["clean"],function(){
-	gulp.start("js:compile","reactes6:compile","es6:compile","less:compile","image:compile","watch","browsersync");
+	gulp.start("browsersync","js:compile","reactes6:compile","less:compile","image:compile","watch");
 });
