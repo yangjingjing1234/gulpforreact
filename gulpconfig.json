@@ -1,0 +1,16 @@
+{
+  "path": {
+    "rootPath": "E:/work/git/yungou/webapps/www/views/src/",
+    "imagePath": "E:/work/git/yungou/framework/web/www/mobile/images/",
+    "jsPath": "E:/work/git/yungou/framework/web/www/mobile/js/",
+    "cssPath": "E:/work/git/yungou/framework/web/www/mobile/css/",
+    "htmlPath": "E:/work/git/yungou/webapps/www/views/src/mobile/",
+    "distJsPath": "E:/work/git/yungou/framework/web/www/mobile/dist/js/",
+    "distCssPath": "E:/work/git/yungou/framework/web/www/mobile/dist/css/",
+    "distImagePath": "E:/work/git/yungou/framework/web/www/mobile/dist/images/",
+    "distRootPath": "E:/work/git/yungou/framework/web/www/mobile/dist/"
+  },
+  "server": {
+    "port": 8080
+  }
+}

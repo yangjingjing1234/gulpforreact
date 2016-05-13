@@ -1,5 +1,5 @@
 
-var config = require("./config.json"),
+var config = require("./gulpconfig.json"),
 	gulp = require("gulp"),
 	browsersync = require("browser-sync").create(),
 	less = require("gulp-less"),
@@ -115,11 +115,11 @@ gulp.task("reactes6:compile",function(){
 		.pipe(babel({"presets":[presetreact,es2015]}))
 		.pipe(uglify())
 		.pipe(rename({suffix:".min"}))
-		.pipe(gulp.dest(PATH.distJsPath))
+		.pipe(gulp.dest(PATH.jsPath))
 		.pipe(webpack({
 			output:{
         path:PATH.jsPath,
-        filename:"[name]_jsx.js",
+        filename:"[name].js",
       },
       stats: {
           // Nice colored output
@@ -131,16 +131,16 @@ gulp.task("reactes6:compile",function(){
 		.pipe(rev.manifest())
 		.pipe(gulp.dest(PATH.distJsPath))
 		.pipe(selfNotify({title:"React JSX (use ES6) to js and minify",message:"JSX package task complete."}));
-      }else{
-      	return gulp.src(PATH.jsPath+"jsx/*.jsx")
+  }else{
+    return gulp.src(PATH.jsPath+"jsx/*.jsx")
 		.pipe(changed(PATH.jsPath))
 		.pipe(plumber({errorHandler:notify.onError("React ES6 Error:<%=error.message %>")}))
 		.pipe(babel({"presets":[presetreact,es2015]}))
-		.pipe(gulp.dest(PATH.distJsPath))
+		.pipe(gulp.dest(PATH.jsPath))
 		.pipe(webpack({
 			output:{
         path:PATH.jsPath,
-        filename:"[name]_jsx.js",
+        filename:"[name].js",
       },
       stats: {
           // Nice colored output
@@ -214,6 +214,12 @@ gulp.task("image:compile",function(){
 		.pipe(rev.manifest())
 		.pipe(gulp.dest(PATH.distImagePath))
 		.pipe(selfNotify({title:"Image minify",message:"Image task complete."}));
+	}else{
+		return gulp.src(PATH.imagePath+"**")
+		.pipe(changed(PATH.distImagePath))
+		.pipe(plumber({errorHandler:notify.onError("Images Error:<%=error.message %>")}))
+		.pipe(gulp.dest(PATH.distImagePath))
+		.pipe(selfNotify({title:"Images copy to dist",message:"Images copy task complete."}));
 	}
 
 });
@@ -223,12 +229,12 @@ gulp.task("browsersync",function(){
 		// 	port:80
 		// },
 		//server:{baseDir:PATH.rootPath},
-		server: {
-			baseDir: PATH.rootPath,
-			middleware: [
-				modRewrite(['^([^.]+)$ /index.html [L]'])
-			]
-		},
+		// server: {
+		// 	baseDir: PATH.rootPath,
+		// 	middleware: [
+		// 		modRewrite(['^([^.]+)$ /index.html [L]'])
+		// 	]
+		// },
 		//rewriteRules:[
 		//{
 		//	match:"/Cannot GET/g",
@@ -239,13 +245,12 @@ gulp.task("browsersync",function(){
 		//],
 		// port:80,
 		//host:"127.0.0.1/work/pageFactory",
-		// proxy:{
-		// 	target:"http://localhost:8000",
-		// 	middleware:function(req,res,next){
-		// 		console.log(req.url);
-		// 		next();
-		// 	}
-		// }
+		proxy:{
+			target:"http://taotaole.local/",
+			middleware: [
+				// modRewrite(['^/(.*)/(.*)$ http://taotaole.local/$1/$2.html [L]'])
+			]
+		}
 	});
 });
 gulp.task("watch",function(){
@@ -258,4 +263,5 @@ gulp.task("watch",function(){
 })
 gulp.task("default",["clean"],function(){
 	gulp.start("browsersync","js:compile","reactes6:compile","less:compile","image:compile","watch");
+	//gulp.start("js:compile","reactes6:compile","less:compile","image:compile","watch");
 });
